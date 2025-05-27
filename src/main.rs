@@ -44,7 +44,6 @@ fn crawl(url: &str,
         all_paragraphs: vec![page_data.paragraphs],
     };
     
-    // TODO: Process links and recurse
     for link in page_data.links.iter().take(30) { // Only use 30 links per page
         if let Some(filtered_url) = filter_links(url, link) {
             if !visited.contains(&filtered_url) {
@@ -52,7 +51,7 @@ fn crawl(url: &str,
                 let sub_result = crawl(
                     &filtered_url, 
                     visited, 
-                    depth + 1,  // Increment depth!
+                    depth + 1, 
                     max_depth
                 );
                 // Combine results
@@ -137,13 +136,14 @@ fn scrape(url: &str) -> Result<PageData, Box<dyn std::error::Error>>{
     })
 }
 fn main() {
-    let url = "https://www.surrey.ac.uk/open-days"
+    let url = "https://www.surrey.ac.uk/open-days";
     
     let mut visited = HashSet::new();
-    let res = crawl(url, &mut visited, 0, 3);
+    let mut res = crawl("https://www.surrey.ac.uk/open-days", &mut visited, 0, 3);
+    println!("{:?}", res.all_headings); // save all important data as json instead
+    let res = crawl("https://www.surrey.ac.uk/open-days", &mut visited, 0, 3);
     println!("{:?}", res.all_headings);
 
-    // let page = scrape("https://en.wikipedia.org/wiki/University_of_Surrey");
     //     match page {
     //         Ok(page_data) => {
     //             println!("Worked");
